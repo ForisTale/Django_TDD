@@ -15,10 +15,10 @@ class NewVisitorTest(unittest.TestCase):
         self.browser.get("http://localhost:8000")
 
         # She notices the page title and header mention to-do lists
-        assert "To-Do" in self.browser.title
+        self.assertIn("To-Do", self.browser.title)
 
         # She is invited to enter a to-do item straight away
-
+        self.fail("Finish test!")
         # She types "Buy peacock feathers" into a text box, Edith dream about flying.
 
         # When she hits enter, the page updates, and now the page lists

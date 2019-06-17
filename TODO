@@ -1,4 +1,4 @@
-TODO Don't save blank items for every request.
-TODO Code smell: POST test is too long?
+DONE Don't save blank items for every request.
+DONE Code smell: POST test is too long?
 TODO Display multiple items in the table.
 TODO Support more than one list!

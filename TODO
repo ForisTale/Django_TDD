@@ -2,3 +2,5 @@ DONE Don't save blank items for every request.
 DONE Code smell: POST test is too long?
 DONE Display multiple items in the table.
 TODO Support more than one list!
+TODO Clean up after functional tests.
+TODO Remove time.sleeps

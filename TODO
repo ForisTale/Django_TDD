@@ -8,4 +8,4 @@ DONE Support more than one list!
     DONE Add unique URLs for each list.
     DONE Add a URL for creating a new list via POST.
     DONE Add URLs for adding a new item to an existing list via POST.
-TODO Refactor away some duplication in urls.py
+DONE Refactor away some duplication in urls.py

@@ -1,13 +1,13 @@
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import WebDriverException
-from django.test import LiveServerTestCase
+from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 import time
 
 MAX_WAIT = 5
 
 
-class NewVisitorTest(LiveServerTestCase):
+class NewVisitorTest(StaticLiveServerTestCase):
     def setUp(self):
         self.browser = webdriver.Firefox()
 
@@ -117,6 +117,7 @@ class NewVisitorTest(LiveServerTestCase):
 
         # She notices the input box is nicely centered
         input_box = self.browser.find_element_by_id("id_new_item")
+        time.sleep(2)
         self.assertAlmostEqual(
             input_box.location["x"] + input_box.size["width"] / 2,
             512,

@@ -3,18 +3,21 @@ from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import WebDriverException
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 import time
-
-MAX_WAIT = 5
+import os
 
 
 class NewVisitorTest(StaticLiveServerTestCase):
     def setUp(self):
         self.browser = webdriver.Firefox()
+        staging_server = os.environ.get("STAGING_SERVER")
+        if staging_server:
+            self.live_server_url = "http://" + staging_server
 
     def tearDown(self):
         self.browser.quit()
 
     def wait_for_row_in_list_table(self, row_text):
+        max_wait = 5
         start_time = time.time()
         while True:
             try:
@@ -23,7 +26,7 @@ class NewVisitorTest(StaticLiveServerTestCase):
                 self.assertIn(row_text, [row.text for row in rows])
                 return
             except (AssertionError, WebDriverException) as e:
-                if time.time() - start_time > MAX_WAIT:
+                if time.time() - start_time > max_wait:
                     raise e
                 else:
                     time.sleep(0.1)

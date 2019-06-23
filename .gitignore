@@ -123,3 +123,4 @@ dmypy.json
 .gitignore
 .idea/
 static/
+!/lists/static/

@@ -1,0 +1,17 @@
+all:
+  hosts:
+
+    main:
+      ansible_host: foris.dev
+      ansible_become: yes
+      ansible_user: Eien
+
+    live-test:
+      ansible_host: live-test.foris.dev
+      ansible_become: yes
+      ansible_user: Eien
+
+    staging:
+      ansible_host: staging.foris.dev
+      ansible_become: yes
+      ansible_user: Eien

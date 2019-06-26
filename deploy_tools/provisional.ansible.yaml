@@ -1,0 +1,125 @@
+---
+
+- hosts: all
+
+  vars:
+    host: "{{ ansible_host }}"
+    site_folder: "/home/{{ ansible_user }}/sites/{{ ansible_host }}"
+    repo_url: "https://github.com/ForisTale/Django_TDD.git"
+
+  tasks:
+    - name: Deadsnakes PPA to get Python 3.6
+      apt_repository:
+        repo="ppa:deadsnakes/ppa"
+
+    - name: make sure required packages are installed
+      apt: pkg=nginx,git,python3.6,python3.6-venv state=present
+
+    - name: SetUp site_folder
+      command: mkdir -p {{ site_folder }}
+
+    - name: Check if .git exists.
+      stat:
+        path: "{{ site_folder }}/.git"
+      register: git_exists
+
+    - name: If .git exists fetch repository.
+      command: git fetch
+      args:
+         chdir: "{{ site_folder }}"
+      when: git_exists.stat.exists == True
+
+    - name: If .git don't exists clone repository
+      command: git clone {{ repo_url }} .
+      args:
+        chdir: "{{ site_folder }}"
+      when: git_exists.stat.exists == False
+
+    - name: Get local hash commit.
+      local_action: command git log -n 1 --format=%H
+      register: commmit_hash
+
+    - name: Reset git to actualy used commit.
+      command: git reset --hard {{ commmit_hash.stdout }}
+      args:
+        chdir: "{{ site_folder }}"
+
+    - name: Check if virtualenv exists.
+      stat:
+        path: "{{ site_folder }}/virtualenv/bin/pip"
+      register: venv_exists
+
+    - name: If virtualenv don't exists set it up.
+      command: python3.6 -m venv virtualenv
+      args:
+        chdir: "{{ site_folder }}"
+      when: venv_exists.stat.exists == False
+
+    - name: Update requirements.
+      command: ./virtualenv/bin/pip install -r requirements.txt
+      args:
+        chdir: "{{ site_folder }}"
+
+    - name: Check if .env exists
+      stat:
+        path: "{{ site_folder }}/.env"
+      register: env_exists
+
+    - name: Generate secret_key
+      script: generate_key.py
+      args:
+        chdir: "{{ site_folder }}/deploy_tools/"
+        executable: python3
+      register: secret_key
+
+    - name: Create .env
+      blockinfile:
+        path: "{{ site_folder }}/.env"
+        block: |
+          DJANGO_DEBUG_FALSE=y
+          SITENAME={{ host }}
+          {{ secret_key.stdout }}
+        create: yes
+      when: env_exists.stat.exists == False
+
+    - name: Update static files.
+      command: ./virtualenv/bin/python manage.py collectstatic --noinput
+      args:
+        chdir: "{{ site_folder }}"
+
+    - name: Update database.
+      command: ./virtualenv/bin/python manage.py migrate --noinput
+      args:
+        chdir: "{{ site_folder }}"
+
+    - name: add nginx config to sites-available
+      template: src=./nginx.conf.j2 dest=/etc/nginx/sites-available/{{ host }}
+      notify:
+        - restart nginx
+
+    - name: add symlink in nginx sites-enabled
+      file:
+        src: /etc/nginx/sites-available/{{ host }}
+        dest: /etc/nginx/sites-enabled/{{ host }}
+        state: link
+      notify:
+        - restart nginx
+
+    - name: write gunicorn service script
+      template:
+        src: ./gunicorn.service.j2
+        dest: /etc/systemd/system/gunicorn-{{ host }}.service
+      notify:
+        - restart gunicorn
+
+  handlers:
+    - name: restart nginx
+      service:
+        name: nginx
+        state: restarted
+    - name: restart gunicorn
+      systemd:
+        name: gunicorn-{{ host }}
+        daemon_reload: yes
+        enabled: yes
+        state: restarted

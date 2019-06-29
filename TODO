@@ -9,6 +9,6 @@ DONE Support more than one list!
     DONE Add a URL for creating a new list via POST.
     DONE Add URLs for adding a new item to an existing list via POST.
 DONE Refactor away some duplication in urls.py
-TODO Remove hardcoded URLs from views.
+DONE Remove hardcoded URLs from views.
 DONE Remove hardcoded URL from forms in list.html and home.html
 TODO Remove duplication of validation logic in views.

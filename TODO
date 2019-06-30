@@ -11,4 +11,4 @@ DONE Support more than one list!
 DONE Refactor away some duplication in urls.py
 DONE Remove hardcoded URLs from views.
 DONE Remove hardcoded URL from forms in list.html and home.html
-TODO Remove duplication of validation logic in views.
+DONE Remove duplication of validation logic in views.

@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>To-Do List</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/static/base.css" rel="stylesheet">
+    <link href="/lists/static/base.css" rel="stylesheet">
 </head>
 <body>
 <div class="container">
@@ -22,7 +22,7 @@
                     {{ form.text }}
                     {% csrf_token %}
                     {% if form.errors %}
-                        <div class="form-group has_error">
+                        <div class="form-group has-error">
                             <div class="help-block">{{ form.text.errors }}</div>
                         </div>
                     {% endif %}
@@ -39,6 +39,13 @@
     </div>
 
 </div>
+
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="/lists/static/list.js"></script>
+
+<script>
+    initialize()
+</script>
 
 </body>
 </html>

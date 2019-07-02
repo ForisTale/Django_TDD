@@ -8,24 +8,19 @@
     repo_url: "https://github.com/ForisTale/Django_TDD.git"
 
   tasks:
-    - name: Deadsnakes PPA to get Python 3.6
+    - name: Deadsnakes PPA to get Python 3.7
       apt_repository:
         repo: ppa:deadsnakes/ppa
 
     - name: make sure required packages are installed
       apt:
-        name: {{ item }}
-        state: build-dep
+        name: ["nginx", "git", "python3.7", "python3.7-venv"]
+        state: present
         update_cache: yes
-      with_items:
-        - nginx
-        - git
-        - python3.7
-        - python3.7-venv
 
     - name: Create site folders.
       file:
-        path: {{ site_folder }}
+        path: "{{ site_folder }}"
         state: directory
 
     - name: Check if .git exists.

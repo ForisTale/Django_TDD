@@ -24,11 +24,12 @@ if "DJANGO_DEBUG_FALSE" in os.environ:
     DEBUG = False
     SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
     ALLOWED_HOSTS = [os.environ["SITE_NAME"]]
-    log_for_settings_env_var.append_to_my_log_file()
+    log_for_settings_env_var.append_to_my_log_file(True)
 else:
     DEBUG = True
     SECRET_KEY = "insecure-key-for-dev"
     ALLOWED_HOSTS = []
+    log_for_settings_env_var.append_to_my_log_file(False)
 
 # Application definition
 

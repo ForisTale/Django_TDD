@@ -125,3 +125,4 @@ dmypy.json
 static/
 !/lists/static/
 virtualenv/
+.my_log

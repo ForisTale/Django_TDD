@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
+from deploy_tools import log_for_settings_env_var
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -22,7 +23,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if "DJANGO_DEBUG_FALSE" in os.environ:
     DEBUG = False
     SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
-    ALLOWED_HOSTS = [os.environ["SITENAME"]]
+    ALLOWED_HOSTS = [os.environ["SITE_NAME"]]
+    log_for_settings_env_var.append_to_my_log_file()
 else:
     DEBUG = True
     SECRET_KEY = "insecure-key-for-dev"

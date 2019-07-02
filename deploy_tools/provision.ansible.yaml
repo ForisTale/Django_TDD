@@ -10,13 +10,23 @@
   tasks:
     - name: Deadsnakes PPA to get Python 3.6
       apt_repository:
-        repo="ppa:deadsnakes/ppa"
+        repo: ppa:deadsnakes/ppa
 
     - name: make sure required packages are installed
-      apt: pkg=nginx,git,python3.6,python3.6-venv state=present
+      apt:
+        name: {{ item }}
+        state: build-dep
+        update_cache: yes
+      with_items:
+        - nginx
+        - git
+        - python3.7
+        - python3.7-venv
 
-    - name: SetUp site_folder
-      command: mkdir -p {{ site_folder }}
+    - name: Create site folders.
+      file:
+        path: {{ site_folder }}
+        state: directory
 
     - name: Check if .git exists.
       stat:
@@ -50,7 +60,7 @@
       register: venv_exists
 
     - name: If virtualenv don't exists set it up.
-      command: python3.6 -m venv virtualenv
+      command: python3.7 -m venv virtualenv
       args:
         chdir: "{{ site_folder }}"
       when: venv_exists.stat.exists == False
@@ -65,21 +75,11 @@
         path: "{{ site_folder }}/.env"
       register: env_exists
 
-    - name: Generate secret_key
-      script: generate_key.py
+    - name: Generate .env
+      script: generate_env_file.py
       args:
         chdir: "{{ site_folder }}/deploy_tools/"
         executable: python3
-      register: secret_key
-
-    - name: Create .env
-      blockinfile:
-        path: "{{ site_folder }}/.env"
-        block: |
-          DJANGO_DEBUG_FALSE=y
-          SITENAME={{ host }}
-          {{ secret_key.stdout }}
-        create: yes
       when: env_exists.stat.exists == False
 
     - name: Update static files.

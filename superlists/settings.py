@@ -10,7 +10,6 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
-from deploy_tools import log_for_settings_env_var
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -29,14 +28,11 @@ if is_deployed:
         name = env_file.readline()
         name = name[name.find("=") + 1:].strip()
         ALLOWED_HOSTS = [name]
-    message = "ALLOWED_HOSTS: " + str(ALLOWED_HOSTS)
     DEBUG = False
-    log_for_settings_env_var.append_to_my_log_file(True)
 else:
     DEBUG = True
     SECRET_KEY = "insecure-key-for-dev"
     ALLOWED_HOSTS = []
-    log_for_settings_env_var.append_to_my_log_file(False)
 
 # Application definition
 

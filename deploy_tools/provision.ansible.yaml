@@ -87,6 +87,11 @@
       args:
         chdir: "{{ site_folder }}"
 
+    - name: Change ownership od all files and folders.
+      command: "chown -R {{ ansible_user }} {{ host }}"
+      args:
+        chdir: "{{ site_folder }}/.."
+
     - name: add nginx config to sites-available
       template: src=./nginx.conf.j2 dest=/etc/nginx/sites-available/{{ host }}
       notify:

@@ -29,7 +29,7 @@ if is_deployed:
         name = env_file.readline()
         name = name[name.find("=") + 1:].strip()
         ALLOWED_HOSTS = [name]
-
+    message = "ALLOWED_HOSTS: " + str(ALLOWED_HOSTS)
     DEBUG = False
     log_for_settings_env_var.append_to_my_log_file(True)
 else:

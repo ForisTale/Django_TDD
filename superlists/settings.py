@@ -24,10 +24,10 @@ is_deployed = os.path.exists("./.env")
 if is_deployed:
     with open("./.env", "r") as env_file:
         secret = env_file.readline()
-        secret = secret[secret.find("=") + 1: -2]
+        secret = secret[secret.find("=") + 1:].strip()
         SECRET_KEY = secret
         name = env_file.readline()
-        name = name[name.find("=") + 1: -2]
+        name = name[name.find("=") + 1:].strip()
         ALLOWED_HOSTS = [name]
 
     DEBUG = False

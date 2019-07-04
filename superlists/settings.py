@@ -44,7 +44,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     "lists",
+    "accounts",
 ]
+
+AUTH_USER_MODEL = "accounts.User"
 
 # Make that all error messages are displayed in terminal
 LOGGING = {

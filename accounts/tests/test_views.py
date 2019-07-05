@@ -55,6 +55,13 @@ class SendLoginEmailViewTest(TestCase):
         self.assertIn(expected_url, body)
 
 
+class LogoutTest(TestCase):
+
+    def test_logout_view_redirect_after_logout(self):
+        response = self.client.get("/accounts/logout")
+        self.assertRedirects(response, "/")
+
+
 @patch("accounts.views.auth")
 class LoginViewTest(TestCase):
 

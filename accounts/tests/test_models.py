@@ -1,16 +1,23 @@
 from django.test import TestCase
-from django.contrib.auth import get_user_model
+from django.contrib import auth
 from accounts.models import Token
+from functional_tests.test_login import TEST_EMAIL
 
-User = get_user_model()
+User = auth.get_user_model()
 
 
 class UserModelTest(TestCase):
 
     @staticmethod
     def test_user_is_valid_with_email_only():
-        user = User(email="a@b.com")
+        user = User(email=TEST_EMAIL)
         user.full_clean()  # should not raise
+
+    def test_no_problem_with_auth_login(self):
+        user = User.objects.create(email=TEST_EMAIL)
+        user.backend = ""
+        request = self.client.request().wsgi_request
+        auth.login(request, user)  # should not raise
 
 
 class TokenModelTest(TestCase):

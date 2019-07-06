@@ -155,6 +155,11 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_HOST_USER = "taleforis@gmail.com"
-EMAIL_HOST_PASSWORD = os.environ["EMAIL_PASSWORD"]
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
+if is_deployed:
+    with open("../.secret") as secret_file:
+        secret = secret_file.readline()
+    EMAIL_HOST_PASSWORD = secret.strip()
+else:
+    EMAIL_HOST_PASSWORD = ""

@@ -1,0 +1,84 @@
+- name: Deadsnakes PPA to get Python 3.7
+  apt_repository:
+    repo: ppa:deadsnakes/ppa
+
+- name: make sure required packages are installed
+  apt:
+    name: ["nginx", "git", "python3.7", "python3.7-venv"]
+    state: present
+    update_cache: yes
+
+- name: Create site folders.
+  file:
+    path: "{{ site_folder }}"
+    state: directory
+
+- name: Check if .git exists.
+  stat:
+    path: "{{ site_folder }}/.git"
+  register: git_exists
+
+- name: If .git exists fetch repository.
+  command: git fetch
+  args:
+     chdir: "{{ site_folder }}"
+  when: git_exists.stat.exists == True
+
+- name: If .git don't exists clone repository
+  command: git clone {{ repo_url }} .
+  args:
+    chdir: "{{ site_folder }}"
+  when: git_exists.stat.exists == False
+
+- name: Get local hash commit.
+  local_action: command git log -n 1 --format=%H
+  register: commmit_hash
+
+- name: Reset git to actualy used commit.
+  command: git reset --hard {{ commmit_hash.stdout }}
+  args:
+    chdir: "{{ site_folder }}"
+
+- name: Check if virtualenv exists.
+  stat:
+    path: "{{ site_folder }}/virtualenv/bin/pip"
+  register: venv_exists
+
+- name: If virtualenv don't exists set it up.
+  command: python3.7 -m venv virtualenv
+  args:
+    chdir: "{{ site_folder }}"
+  when: venv_exists.stat.exists == False
+
+- name: Update requirements.
+  command: ./virtualenv/bin/pip install -r requirements.txt
+  args:
+    chdir: "{{ site_folder }}"
+
+- name: Check if .env exists
+  stat:
+    path: "{{ site_folder }}/.env"
+  register: env_exists
+
+- name: Generate .env
+  script: generate_env_file.py
+  args:
+    chdir: "{{ site_folder }}/deploy_tools/"
+    executable: python3
+  when: env_exists.stat.exists == False
+
+- name: Update static files.
+  command: ./virtualenv/bin/python manage.py collectstatic --noinput
+  args:
+    chdir: "{{ site_folder }}"
+
+- name: Update database.
+  command: ./virtualenv/bin/python manage.py migrate --noinput
+  args:
+    chdir: "{{ site_folder }}"
+
+- name: Change ownership of all files and folders.
+  file:
+    owner: "{{ ansible_user }}"
+    path: "{{ site_folder }}/.."
+    recurse: yes

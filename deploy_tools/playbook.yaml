@@ -1,0 +1,12 @@
+---
+
+- hosts: all
+
+  tasks:
+    - name: Start setup website files.
+      import_role:
+        name: files_setup
+
+    - name: Start setup services.
+      import_role:
+        name: services_setup

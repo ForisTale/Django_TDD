@@ -1,0 +1,2 @@
+site_folder: "/home/{{ ansible_user }}/sites/{{ ansible_host }}"
+repo_url: "https://github.com/ForisTale/Django_TDD.git"

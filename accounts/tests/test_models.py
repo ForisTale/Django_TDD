@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.contrib import auth
 from accounts.models import Token
-from functional_tests.test_login import TEST_EMAIL
+from functional_tests.base import TEST_EMAIL
 
 User = auth.get_user_model()
 

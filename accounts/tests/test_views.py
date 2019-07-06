@@ -1,6 +1,6 @@
 from django.test import TestCase
 from unittest.mock import patch, call
-from functional_tests.test_login import TEST_EMAIL
+from functional_tests.base import TEST_EMAIL
 from accounts.models import Token
 
 

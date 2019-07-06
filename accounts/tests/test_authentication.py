@@ -2,7 +2,7 @@ from django.test import TestCase
 from django.contrib.auth import get_user_model
 from accounts.authentication import PasswordlessAuthenticationBackend
 from accounts.models import Token
-from functional_tests.test_login import TEST_EMAIL
+from functional_tests.base import TEST_EMAIL
 
 User = get_user_model()
 

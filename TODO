@@ -12,4 +12,4 @@ DONE Refactor away some duplication in urls.py
 DONE Remove hardcoded URLs from views.
 DONE Remove hardcoded URL from forms in list.html and home.html
 DONE Remove duplication of validation logic in views.
-TODO Clean up wait_for stuff in base.py
+DONE Clean up wait_for stuff in base.py

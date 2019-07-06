@@ -1,12 +1,12 @@
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
-
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
-
+from .server_tools import reset_database
 import time
 import os
 
-TEST_EMAIL = "edith@example.com"
+TEST_EMAIL = "staging_test_email@yahoo.com"
+FOR_TEST_EMAIL = "staging_test_email"
 
 
 def wait(fn):
@@ -28,9 +28,10 @@ def wait(fn):
 class FunctionalTest(StaticLiveServerTestCase):
     def setUp(self):
         self.browser = webdriver.Firefox()
-        staging_server = os.environ.get("STAGING_SERVER")
-        if staging_server:
-            self.live_server_url = "http://" + staging_server
+        self.staging_server = os.environ.get("STAGING_SERVER")
+        if self.staging_server:
+            self.live_server_url = "http://" + self.staging_server
+            reset_database(self.staging_server)
 
     def tearDown(self):
         self.browser.quit()

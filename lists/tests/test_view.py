@@ -148,5 +148,8 @@ class NewListTest(TestCase):
         self.assertEqual(Item.objects.count(), 1)
 
 
-class NewItemTest(TestCase):
-    pass
+class MyListTest(TestCase):
+
+    def test_my_lists_url_renders_my_lists_template(self):
+        response = self.client.get("/lists/users/a@b.com/")
+        self.assertTemplateUsed(response, "lists/my_lists.html")

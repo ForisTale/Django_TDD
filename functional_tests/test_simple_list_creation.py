@@ -47,10 +47,7 @@ class NewVisitorTest(FunctionalTest):
 
         # Edith start a new to-do list.
         self.browser.get(self.live_server_url)
-        input_box = self.get_item_input_box()
-        input_box.send_keys("Buy peacock feathers.")
-        input_box.send_keys(Keys.ENTER)
-        self.wait_for_row_in_list_table("1: Buy peacock feathers.")
+        self.add_list_item("Buy peacock feathers.")
 
         # She noticed that her list has unique URL.
         edith_list_url = self.browser.current_url
@@ -70,10 +67,7 @@ class NewVisitorTest(FunctionalTest):
         self.assertNotIn("to fly.", page_text)
 
         # Francis start a new list by entering a new item.
-        input_box = self.get_item_input_box()
-        input_box.send_keys("Buy milk.")
-        input_box.send_keys(Keys.ENTER)
-        self.wait_for_row_in_list_table("1: Buy milk.")
+        self.add_list_item("Buy milk.")
 
         # Francis got his own unique URL
         francis_list_url = self.browser.current_url

@@ -1,11 +1,10 @@
 from selenium.webdriver.common.keys import Keys
 import re
 
-from functional_tests.base import TEST_EMAIL, FOR_TEST_EMAIL
-from .base import FunctionalTest
-
-
-SUBJECT = "Your login link for Superlists."
+from .base import (
+    FunctionalTest, SUBJECT,
+    TEST_EMAIL, FOR_TEST_EMAIL
+)
 
 
 class LoginTest(FunctionalTest):

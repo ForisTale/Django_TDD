@@ -5,19 +5,21 @@ from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.core import mail
 from .server_tools import reset_database
 from datetime import datetime
+import re
 import os
 import time
 import poplib
 
+MAX_WAIT = 20
 TEST_EMAIL = "staging_test_email@yahoo.com"
 FOR_TEST_EMAIL = "staging_test_email"
 SCREEN_DUMP_LOCATION = os.path.join(
     os.path.dirname(os.path.abspath(__file__)), "screendumps"
 )
+SUBJECT = "Your login link for Superlists."
 
 
 def wait(fn):
-    max_wait = 5
 
     def modified_fn(*args, **kwargs):
         start_time = time.time()
@@ -25,7 +27,7 @@ def wait(fn):
             try:
                 return fn(*args, **kwargs)
             except (AssertionError, WebDriverException, IndexError) as e:
-                if time.time() - start_time > max_wait:
+                if time.time() - start_time > MAX_WAIT:
                     raise e
                 else:
                     time.sleep(0.1)

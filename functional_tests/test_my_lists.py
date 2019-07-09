@@ -1,31 +1,30 @@
-from selenium.webdriver.common.keys import Keys
-from .base import FunctionalTest, TEST_EMAIL, FOR_TEST_EMAIL
-from .test_login import SUBJECT
-import re
+from django.conf import settings
+from .base import FunctionalTest
+from .server_tools import create_session_on_server
+from .management.commands.create_session import create_pre_authenticated_session
 
 
 class MyListTest(FunctionalTest):
 
-    def get_url_for_log_in(self, test_email, subject, for_test_email):
-        body = self.wait_for_email(test_email, subject, for_test_email)
-        url_search = re.search(r"http://.+/.+$", body)
-        if not url_search:
-            self.fail(f"Could not find url in email body:\n{body}")
-        url_for_log_in = url_search.group(0)
-        return url_for_log_in
+    def create_pre_authenticated_session(self, email):
+        if self.staging_server:
+            session_key = create_session_on_server(self.staging_server, email)
 
-    def log_into_website(self):
-        self.browser.find_element_by_name("email").send_keys(TEST_EMAIL)
-        self.browser.find_element_by_name("email").send_keys(Keys.ENTER)
+        else:
+            session_key = create_pre_authenticated_session(email)
 
-        url_for_log_in = self.get_url_for_log_in(TEST_EMAIL, SUBJECT, FOR_TEST_EMAIL)
-        self.browser.get(url_for_log_in)
+        # to set a cookie we need to first visit the domain.
+        # 404 pages load the quickest!
+        self.browser.get(self.live_server_url + "/404_no_such_url/")
+        self.browser.add_cookie(dict(
+            name=settings.SESSION_COOKIE_NAME,
+            value=session_key,
+            path='/',
+        ))
 
     def test_logged_in_users_lists_are_saved_as_my_lists(self):
-        # Edith log into website
-        self.browser.get(self.live_server_url)
-        self.log_into_website()
-        self.wait_to_be_logged_in(TEST_EMAIL)
+        # Edith is a logged-in user
+        self.create_pre_authenticated_session("edith@example.com")
 
         # She goes to the home page and starts a list
         self.browser.get(self.live_server_url)

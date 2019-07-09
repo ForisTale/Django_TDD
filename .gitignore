@@ -126,3 +126,4 @@ static/
 !/lists/static/
 virtualenv/
 .my_log
+/functional_tests/screendumps/

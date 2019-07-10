@@ -63,6 +63,14 @@ class ListModeTest(TestCase):
         list_ = List.objects.create()
         self.assertEqual(list_.get_absolute_url(), f"/lists/{list_.id}/")
 
+    def test_has_shared_with_add(self):
+        user = User.objects.create(email="a@b.com")
+        list_ = List.objects.create()
+        get_user = User.objects.get(email="a@b.com")
+        list_.shared_with.add(get_user)
+
+        self.assertIn(user, list_.shared_with.all())
+
     def test_create_new_creates_list_and_first_item(self):
         List.create_new(first_item_text="new item text")
         new_item = Item.objects.first()
